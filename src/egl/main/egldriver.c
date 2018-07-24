@@ -100,7 +100,7 @@ _eglMatchDriver(_EGLDisplay *disp)
 #ifdef HAVE_ANDROID_PLATFORM
    char prop_val[PROPERTY_VALUE_MAX];
    property_get("drm.gpu.force_software", prop_val, "0");
-   dpy->Options.ForceSoftware |= strncmp(prop_val, "0", PROPERTY_VALUE_MAX) != 0;
+   disp->Options.ForceSoftware |= strncmp(prop_val, "0", PROPERTY_VALUE_MAX) != 0;
 #endif
 
    best_drv = _eglMatchAndInitialize(disp);
