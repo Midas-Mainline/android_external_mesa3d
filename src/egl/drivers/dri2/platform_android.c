@@ -1373,7 +1373,11 @@ droid_load_driver(_EGLDisplay *disp, bool swrast)
    struct dri2_egl_display *dri2_dpy = disp->DriverData;
    const char *err;
 
-   dri2_dpy->driver_name = loader_get_driver_for_fd(dri2_dpy->fd);
+   if (disp->Options.ForceSoftware)
+      dri2_dpy->driver_name = strdup("kms_swrast");
+   else
+      dri2_dpy->driver_name = loader_get_driver_for_fd(dri2_dpy->fd);
+
    if (dri2_dpy->driver_name == NULL)
       return false;
 
