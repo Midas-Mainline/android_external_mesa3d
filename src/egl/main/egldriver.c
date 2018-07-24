@@ -39,6 +39,10 @@
 #include <stdlib.h>
 #include "c11/threads.h"
 
+#ifdef HAVE_ANDROID_PLATFORM
+#include <cutils/properties.h>
+#endif
+
 #include "egldefines.h"
 #include "egldisplay.h"
 #include "egldriver.h"
@@ -92,6 +96,12 @@ _eglMatchDriver(_EGLDisplay *disp)
    /* set options */
    disp->Options.ForceSoftware =
       env_var_as_boolean("LIBGL_ALWAYS_SOFTWARE", false);
+
+#ifdef HAVE_ANDROID_PLATFORM
+   char prop_val[PROPERTY_VALUE_MAX];
+   property_get("drm.gpu.force_software", prop_val, "0");
+   dpy->Options.ForceSoftware |= strncmp(prop_val, "0", PROPERTY_VALUE_MAX) != 0;
+#endif
 
    best_drv = _eglMatchAndInitialize(disp);
    if (!best_drv && !disp->Options.ForceSoftware) {
