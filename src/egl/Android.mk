@@ -38,6 +38,7 @@ LOCAL_SRC_FILES := \
 	$(dri2_backend_core_FILES) \
 	drivers/dri2/platform_device.c \
 	drivers/dri2/platform_android.c \
+	drivers/dri2/platform_android_mapper.cpp \
 	drivers/dri2/platform_surfaceless.c \
 
 LOCAL_CFLAGS := \
@@ -60,6 +61,16 @@ LOCAL_SHARED_LIBRARIES := \
 	liblog \
 	libcutils \
 	libsync
+
+ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 30; echo $$?), 0)
+LOCAL_SHARED_LIBRARIES += \
+	android.hardware.graphics.mapper@4.0 \
+	libgralloctypes \
+	libhidlbase \
+	libutils
+
+	LOCAL_CFLAGS += -DUSE_IMAPPER4_METADATA_API
+endif
 
 ifeq ($(shell test $(PLATFORM_SDK_VERSION) -ge 27; echo $$?), 0)
 LOCAL_C_INCLUDES += \
